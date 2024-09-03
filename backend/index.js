@@ -22,6 +22,7 @@ app.get("/", (req, res) => {
 app.use(express.json());
 app.use(cookieParser());
 app.use(urlencoded({ extended: true }));
+
 const corsOptions = {
   origin: "http://localhost:5173",
   Credential: true,
@@ -30,8 +31,8 @@ app.use(cors(corsOptions));
 
 // all API's
 app.use("/api/v1/user", userRoute);
-app.use("api/v1/post",postRoute);
-app.use("api/v1/message",messageRoute);
+app.use("/api/v1/post",postRoute);
+app.use("/api/v1/message",messageRoute);
 
 app.listen(PORT, () => {
   connectDB();
