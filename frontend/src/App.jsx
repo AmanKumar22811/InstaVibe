@@ -1,11 +1,9 @@
-import { Button } from "./components/ui/button";
+import Signup from "./components/Signup";
 
 function App() {
   return (
     <>
-      <h1 className="font-extrabold text-5xl text-blue-700 text-center ">
-        React App
-      </h1>
+      <Signup />
     </>
   );
 }
