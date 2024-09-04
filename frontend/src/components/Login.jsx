@@ -9,9 +9,8 @@ import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
-const Signup = () => {
+const Login = () => {
   const [input, setInput] = useState({
-    username: "",
     email: "",
     password: "",
   });
@@ -24,23 +23,21 @@ const Signup = () => {
 
   const navigate = useNavigate();
 
-  const signupHandler = async (e) => {
+  const LoginHandler = async (e) => {
     e.preventDefault();
-    console.log(input);
 
     try {
       setLoading(true);
-      const res = await axios.post("/api/v1/user/register", input, {
+      const res = await axios.post("/api/v1/user/login", input, {
         headers: {
           "Content-Type": "application/json",
         },
         withCredentials: true,
       });
       if (res.data.success) {
-        navigate("/login");
+        navigate("/");
         toast.success(res.data.message);
         setInput({
-          username: "",
           email: "",
           password: "",
         });
@@ -56,27 +53,14 @@ const Signup = () => {
     <div className="relative flex items-center justify-center min-h-screen">
       <AnimatedBackground />
       <form
-        onSubmit={signupHandler}
+        onSubmit={LoginHandler}
         className="animated-border relative z-10 bg-white shadow-lg rounded-lg flex flex-col gap-6 p-8 w-full max-w-md"
       >
         <div className="text-center">
           <h1 className="text-3xl font-bold sm:text-4xl">LOGO</h1>
           <p className="text-gray-600 mt-2 text-sm sm:text-base">
-            Sign up to see photos & videos from your friends
+            Login to see photos & videos from your friends
           </p>
-        </div>
-
-        <div>
-          <Label className="block text-sm font-medium text-gray-700 sm:text-base">
-            Username
-          </Label>
-          <Input
-            type="text"
-            name="username"
-            value={input.username}
-            onChange={changeEventHandler}
-            className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-          />
         </div>
 
         <div>
@@ -114,13 +98,14 @@ const Signup = () => {
             type="submit"
             className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition"
           >
-            SignUp
+            LogIn
           </Button>
         )}
+
         <span className="text-center font-semibold ">
-          Already have an account?
-          <Link to="/login" className="text-blue-600 p-2">
-            Login
+          Doesn't have an account?
+          <Link to="/signup" className="text-blue-600 p-2">
+            SignUp
           </Link>
         </span>
       </form>
@@ -128,4 +113,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Login;
