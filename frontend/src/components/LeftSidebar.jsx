@@ -64,7 +64,7 @@ const LeftSidebar = () => {
             <div
               onClick={() => sidebarHandler(item.text)}
               key={index}
-              className="flex items-center gap-3 relative hover:bg-cyan-300 hover:font-semibold  hover:text-pink-500 cursor-pointer rounded-lg p-3 my-3 transition-transform duration-200 ease-in-out transform hover:scale-110"
+              className="flex items-center gap-3 relative hover:bg-pink-500 hover:font-semibold cursor-pointer rounded-lg p-3 my-3 transition-transform duration-200 ease-in-out transform hover:scale-110"
             >
               {item.icon}
               <span className="hidden sm:inline">{item.text}</span>
