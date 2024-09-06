@@ -12,28 +12,13 @@ import {
   Search,
   TrendingUp,
 } from "lucide-react";
-
-const sidebarItems = [
-  { icon: <Home />, text: "Home" },
-  { icon: <Search />, text: "Search" },
-  { icon: <TrendingUp />, text: "Explore" },
-  { icon: <MessageCircle />, text: "Messages" },
-  { icon: <Heart className="w-5 h-5" />, text: "Notifications" },
-  { icon: <PlusSquare />, text: "Create" },
-  {
-    icon: (
-      <Avatar className="w-6 h-6">
-        <AvatarImage src="https://github.com/shadcn.png" />
-      </Avatar>
-    ),
-    text: "Profile",
-  },
-  { icon: <LogOut />, text: "Logout" },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { setAuthUser } from "@/redux/authSlice";
 
 const LeftSidebar = () => {
   const navigate = useNavigate();
-
+  const { user } = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
   const logoutHandler = async () => {
     try {
       const res = await axios.get("/api/v1/user/logout", {
@@ -41,6 +26,7 @@ const LeftSidebar = () => {
       });
 
       if (res.data.success) {
+        dispatch(setAuthUser(null));
         navigate("/login");
         toast.success(res.data.message);
       }
@@ -55,6 +41,26 @@ const LeftSidebar = () => {
       logoutHandler();
     }
   };
+
+  const sidebarItems = [
+    { icon: <Home />, text: "Home" },
+    { icon: <Search />, text: "Search" },
+    { icon: <TrendingUp />, text: "Explore" },
+    { icon: <MessageCircle />, text: "Messages" },
+    { icon: <Heart className="w-5 h-5" />, text: "Notifications" },
+    { icon: <PlusSquare />, text: "Create" },
+    {
+      icon: (
+        <Avatar className="w-6 h-6">
+          <AvatarImage
+            src={user ? user?.profilePicture : "https://github.com/shadcn.png"}
+          />
+        </Avatar>
+      ),
+      text: "Profile",
+    },
+    { icon: <LogOut />, text: "Logout" },
+  ];
 
   return (
     <div className="fixed top-0 z-10 left-0 px-4 lg:w-[16%] md:w-[20%] sm:w-[25%] w-[30%] h-screen bg-gray-900 text-white border-r border-gray-700">
