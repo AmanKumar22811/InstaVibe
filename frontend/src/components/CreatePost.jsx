@@ -7,7 +7,9 @@ import { Button } from "./ui/button";
 import { readFileAsDataURL } from "@/lib/utils";
 import { Loader2, LucideTableColumnsSplit } from "lucide-react";
 import axios from "axios";
-import { toast } from 'sonner';
+import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import { setPosts } from "@/redux/postSlice";
 
 const CreatePost = ({ open, setOpen }) => {
   const imageRef = useRef();
@@ -15,6 +17,9 @@ const CreatePost = ({ open, setOpen }) => {
   const [caption, setCaption] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [loading, setLoading] = useState(false);
+  const { user } = useSelector((store) => store.auth);
+  const { posts } = useSelector((store) => store.post);
+  const dispatch = useDispatch();
 
   const createPostHandler = async (e) => {
     const formData = new FormData();
@@ -30,7 +35,9 @@ const CreatePost = ({ open, setOpen }) => {
         withCredentials: true,
       });
       if (res.data.success) {
+        dispatch(setPosts([res.data.post, ...posts]));
         toast.success(res.data.message);
+        setOpen(false);
       }
     } catch (error) {
       toast.error(error.response.data.message);
@@ -56,11 +63,11 @@ const CreatePost = ({ open, setOpen }) => {
         </DialogHeader>
         <div className="flex gap-3 items-center">
           <Avatar>
-            <AvatarImage />
+            <AvatarImage src={user?.ProfilePicture} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div>
-            <h1 className="font-semibold ">Username</h1>
+            <h1 className="font-semibold ">{user?.username}</h1>
             <span className="text-gray-600 ">Bio... here</span>
           </div>
         </div>

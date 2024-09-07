@@ -6,10 +6,10 @@ import { Button } from "./ui/button";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import CommentDialog from "./CommentDialog";
 
-const Post = () => {
+const Post = ({ post }) => {
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
-
+  
   const changeEventHandler = (e) => {
     const inputText = e.target.value;
     setText(inputText.trim() ? inputText : "");
@@ -21,10 +21,10 @@ const Post = () => {
       <div className="flex items-center justify-between p-4 border-b border-gray-700">
         <div className="flex items-center gap-3">
           <Avatar className="w-10 h-10">
-            <AvatarImage src="" />
+            <AvatarImage src={post.author?.profilePicture} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <h1 className="font-semibold text-lg">UserName</h1>
+          <h1 className="font-semibold text-lg">{post.author?.username}</h1>
         </div>
         <Dialog>
           <DialogTrigger asChild>
@@ -55,7 +55,7 @@ const Post = () => {
 
       {/* Post Image */}
       <img
-        src="https://images.unsplash.com/photo-1725449670931-b53a7cb689b9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyNHx8fGVufDB8fHx8fA%3D%3D"
+        src={post.image}
         alt="image cannot load"
         className="rounded-lg my-2 w-full aspect-square object-cover"
       />
@@ -73,16 +73,19 @@ const Post = () => {
         <Bookmark className="cursor-pointer text-gray-400 hover:text-gray-200 transition-colors" />
       </div>
       <span className="font-medium block mb-2 px-4 text-gray-200">
-        1k Likes
+        {post.likes.length} likes
       </span>
       <p className="px-4">
-        <span className="font-semibold mr-2 text-gray-300">UserName</span>
+        <span className="font-semibold mr-2 text-gray-300">
+          {post.author?.username}
+        </span>
+        {post.caption}
       </p>
       <span
         onClick={() => setOpen(true)}
         className="cursor-pointer text-gray-400 px-4 hover:underline hover:text-gray-300"
       >
-        View all 10 comments
+       view coments
       </span>
       <CommentDialog open={open} setOpen={setOpen} />
 
