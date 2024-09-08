@@ -5,16 +5,73 @@ import { Bookmark, MessageCircle, MoreHorizontal, Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import CommentDialog from "./CommentDialog";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { toast } from "sonner";
+import { setPosts } from "@/redux/postSlice";
 
 const Post = ({ post }) => {
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
-  
+  const { user } = useSelector((store) => store.auth);
+  const { posts } = useSelector((store) => store.post);
+  const [liked, setLiked] = useState(post.likes.includes(user?._id) || false);
+  const [postLike, setPostLike] = useState(post.likes.length);
+  const dispatch = useDispatch();
+
   const changeEventHandler = (e) => {
     const inputText = e.target.value;
     setText(inputText.trim() ? inputText : "");
   };
 
+  const deletePostHandler = async () => {
+    try {
+      const res = await axios.delete(`/api/v1/post/delete/${post?._id}`, {
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        const updatedPostData = posts.filter(
+          (postItem) => postItem?._id !== post?._id
+        );
+        dispatch(setPosts(updatedPostData));
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
+
+  const likeOrDislikeHandler = async () => {
+    try {
+      const action = liked ? "dislike" : "like";
+      const res = await axios.get(`/api/v1/post/${post?._id}/${action}`, {
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        const updatedLikes = liked ? postLike - 1 : postLike + 1;
+        setPostLike(updatedLikes);
+        setLiked(!liked);
+
+        //update post
+        const updatedPostData = posts.map((p) =>
+          p._id === post._id
+            ? {
+                ...p,
+                likes: liked
+                  ? p.likes.filter((id) => id !== user._id)
+                  : [...p.likes, user._id],
+              }
+            : p
+        );
+        dispatch(setPosts(updatedPostData));
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
   return (
     <div className="my-8 w-full max-w-sm mx-auto text-white bg-[#0c192c] rounded-lg shadow-lg transition-transform transform hover:scale-105">
       {/* Post Header */}
@@ -43,12 +100,15 @@ const Post = ({ post }) => {
             >
               Add to favorites
             </Button>
-            <Button
-              variant="ghost"
-              className="cursor-pointer w-fit text-lg text-red-500 font-bold hover:text-red-600"
-            >
-              Delete
-            </Button>
+            {user && user?._id === post?.author._id && (
+              <Button
+                variant="ghost"
+                className="cursor-pointer w-fit text-lg text-red-500 font-bold hover:text-red-600"
+                onClick={deletePostHandler}
+              >
+                Delete
+              </Button>
+            )}
           </DialogContent>
         </Dialog>
       </div>
@@ -63,7 +123,18 @@ const Post = ({ post }) => {
       {/* Post Actions */}
       <div className="flex items-center justify-between px-4 my-2">
         <div className="flex items-center gap-4">
-          <FaRegHeart className="text-2xl cursor-pointer text-red-600 hover:text-red-700 transition-colors" />
+          {liked ? (
+            <FaHeart
+              onClick={likeOrDislikeHandler}
+              className="text-red-600 cursor-pointer text-2xl"
+            />
+          ) : (
+            <FaRegHeart
+              onClick={likeOrDislikeHandler}
+              className="text-2xl cursor-pointer text-red-600 hover:text-red-700 transition-colors"
+            />
+          )}
+
           <MessageCircle
             onClick={() => setOpen(true)}
             className="cursor-pointer text-gray-400 hover:text-gray-200 transition-colors"
@@ -73,7 +144,7 @@ const Post = ({ post }) => {
         <Bookmark className="cursor-pointer text-gray-400 hover:text-gray-200 transition-colors" />
       </div>
       <span className="font-medium block mb-2 px-4 text-gray-200">
-        {post.likes.length} likes
+        {postLike} likes
       </span>
       <p className="px-4">
         <span className="font-semibold mr-2 text-gray-300">
@@ -85,7 +156,7 @@ const Post = ({ post }) => {
         onClick={() => setOpen(true)}
         className="cursor-pointer text-gray-400 px-4 hover:underline hover:text-gray-300"
       >
-       view coments
+        view comments
       </span>
       <CommentDialog open={open} setOpen={setOpen} />
 
