@@ -8,7 +8,7 @@ import CommentDialog from "./CommentDialog";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "sonner";
-import { setPosts } from "@/redux/postSlice";
+import { setPosts, setSelectedPost } from "@/redux/postSlice";
 
 const Post = ({ post }) => {
   const [text, setText] = useState("");
@@ -17,6 +17,7 @@ const Post = ({ post }) => {
   const { posts } = useSelector((store) => store.post);
   const [liked, setLiked] = useState(post.likes.includes(user?._id) || false);
   const [postLike, setPostLike] = useState(post.likes.length);
+  const [comment, setComment] = useState(post.comments);
   const dispatch = useDispatch();
 
   const changeEventHandler = (e) => {
@@ -72,6 +73,37 @@ const Post = ({ post }) => {
       toast.error(error.response.data.message);
     }
   };
+
+  const commentHandler = async () => {
+    try {
+      const res = await axios.post(
+        `/api/v1/post/${post._id}/comment`,
+        { text },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      console.log(res.data);
+      if (res.data.success) {
+        const updatedCommentData = [...comment, res.data.comment];
+        setComment(updatedCommentData);
+
+        const updatedPostData = posts.map((p) =>
+          p._id === post._id ? { ...p, comments: updatedCommentData } : p
+        );
+
+        dispatch(setPosts(updatedPostData));
+        toast.success(res.data.message);
+        setText("");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="my-8 w-full max-w-sm mx-auto text-white bg-[#0c192c] rounded-lg shadow-lg transition-transform transform hover:scale-105">
       {/* Post Header */}
@@ -81,12 +113,15 @@ const Post = ({ post }) => {
             <AvatarImage src={post.author?.profilePicture} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
+
           <h1 className="font-semibold text-lg">{post.author?.username}</h1>
         </div>
+
         <Dialog>
           <DialogTrigger asChild>
             <MoreHorizontal className="cursor-pointer text-gray-400 hover:text-gray-200 transition-colors" />
           </DialogTrigger>
+
           <DialogContent className="flex flex-col items-center text-center ">
             <Button
               variant="ghost"
@@ -136,9 +171,13 @@ const Post = ({ post }) => {
           )}
 
           <MessageCircle
-            onClick={() => setOpen(true)}
+            onClick={() => {
+              dispatch(setSelectedPost(post));
+              setOpen(true);
+            }}
             className="cursor-pointer text-gray-400 hover:text-gray-200 transition-colors"
           />
+
           <Send className="cursor-pointer text-gray-400 hover:text-gray-200 transition-colors" />
         </div>
         <Bookmark className="cursor-pointer text-gray-400 hover:text-gray-200 transition-colors" />
@@ -152,12 +191,19 @@ const Post = ({ post }) => {
         </span>
         {post.caption}
       </p>
-      <span
-        onClick={() => setOpen(true)}
-        className="cursor-pointer text-gray-400 px-4 hover:underline hover:text-gray-300"
-      >
-        view comments
-      </span>
+
+      {comment.length > 0 && (
+        <span
+          onClick={() => {
+            dispatch(setSelectedPost(post));
+            setOpen(true);
+          }}
+          className="cursor-pointer text-gray-400 px-4 hover:underline hover:text-gray-300"
+        >
+          view all {comment.length} comments
+        </span>
+      )}
+
       <CommentDialog open={open} setOpen={setOpen} />
 
       {/* Comment Input */}
@@ -170,7 +216,10 @@ const Post = ({ post }) => {
           className="w-full bg-[#1a273f] p-2 rounded-lg text-gray-300 outline-none placeholder-gray-500 focus:ring focus:ring-blue-300"
         />
         {text && (
-          <span className="text-cyan-500 cursor-pointer transition-transform transform hover:scale-125">
+          <span
+            onClick={commentHandler}
+            className="text-cyan-500 cursor-pointer transition-transform transform hover:scale-125"
+          >
             Post
           </span>
         )}
