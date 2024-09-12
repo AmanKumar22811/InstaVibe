@@ -8,7 +8,7 @@ const SuggestedUsers = () => {
   return (
     <div className="my-10">
       <div className="flex items-center justify-between text-sm gap-2">
-        <h1 className="font-semibold text-gray-600">Suggested for you</h1>
+        <h1 className="font-semibold text-gray-400">Suggested for you</h1>
         <span className="font-medium cursor-pointer">See All</span>
       </div>
       {suggestedUsers.map((user) => {
@@ -19,7 +19,7 @@ const SuggestedUsers = () => {
           >
             <div className="flex items-center gap-2">
               <Link to={`/profile/${user?._id}`}>
-                <Avatar>
+                <Avatar className="text-black">
                   <AvatarImage src={user?.profilePicture} alt="post_image" />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
@@ -28,7 +28,7 @@ const SuggestedUsers = () => {
                 <h1 className="font-semibold text-sm">
                   <Link to={`/profile/${user?._id}`}>{user?.username}</Link>
                 </h1>
-                <span className="text-gray-600 text-sm">
+                <span className="text-gray-500 text-sm">
                   {user?.bio || "Bio here..."}
                 </span>
               </div>
