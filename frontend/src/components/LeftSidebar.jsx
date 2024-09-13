@@ -49,6 +49,8 @@ const LeftSidebar = () => {
       setOpen(true);
     } else if (textType === "Profile") {
       navigate(`/profile/${user?._id}`);
+    } else if (textType === "Home") {
+      navigate("/");
     }
   };
 
