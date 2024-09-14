@@ -65,7 +65,7 @@ const LeftSidebar = () => {
       icon: (
         <Avatar className="w-6 h-6">
           <AvatarImage
-            src={user ? user?.profilePicture : "https://github.com/shadcn.png"}
+            src={user?.profilePicture || "https://github.com/shadcn.png"}
           />
         </Avatar>
       ),
