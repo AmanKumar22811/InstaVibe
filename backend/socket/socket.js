@@ -8,12 +8,14 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.URL,
     methods: ["GET", "POST"],
   },
 });
 
-const userSocketMap = {};
+const userSocketMap = {}; // this map stores socket id corresponding the user id; userId -> socketId
+
+export const getReceiverSocketId = (receiverId) => userSocketMap[receiverId];
 
 io.on("connection", (socket) => {
   const userId = socket.handshake.query.userId;
@@ -29,7 +31,6 @@ io.on("connection", (socket) => {
       console.log(`User connected: UserID : ${userId} , SocketId=${socket.id}`);
       delete userSocketMap[userId];
     }
-
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
   });
 });
