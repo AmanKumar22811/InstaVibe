@@ -105,6 +105,19 @@ const Post = ({ post }) => {
     }
   };
 
+  const bookmarkHandler = async () => {
+    try {
+      const res = await axios.get(`/api/v1/post/${post?._id}/bookmark`, {
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="my-8 w-full max-w-sm mx-auto text-white bg-[#0c192c] rounded-lg shadow-lg transition-transform transform hover:scale-105">
       {/* Post Header */}
@@ -129,12 +142,15 @@ const Post = ({ post }) => {
           </DialogTrigger>
 
           <DialogContent className="flex flex-col items-center text-center ">
-            <Button
-              variant="ghost"
-              className="cursor-pointer w-fit text-red-500 font-bold text-lg hover:text-red-600 "
-            >
-              Unfollow
-            </Button>
+            {post?.author?._id !== user?._id && (
+              <Button
+                variant="ghost"
+                className="cursor-pointer w-fit text-red-500 font-bold text-lg hover:text-red-600 "
+              >
+                Unfollow
+              </Button>
+            )}
+
             <Button
               variant="ghost"
               className="cursor-pointer w-fit text-lg font-semibold hover:text-gray-300"
@@ -186,7 +202,10 @@ const Post = ({ post }) => {
 
           <Send className="cursor-pointer text-gray-400 hover:text-gray-200 transition-colors" />
         </div>
-        <Bookmark className="cursor-pointer text-gray-400 hover:text-gray-200 transition-colors" />
+        <Bookmark
+          onClick={bookmarkHandler}
+          className="cursor-pointer text-gray-400 hover:text-gray-200 transition-colors"
+        />
       </div>
       <span className="font-medium block mb-2 px-4 text-gray-200">
         {postLike} likes
