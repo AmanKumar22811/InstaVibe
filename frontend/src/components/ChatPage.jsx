@@ -113,7 +113,7 @@ const ChatPage = () => {
       ) : (
         <div className="flex flex-col items-center justify-center mx-auto">
           <MessageCircleCode className="w-32 h-32 my-4" />
-          <h1 className="font-medium text-xl">Your messages </h1>
+          <h1 className="font-medium">Your messages </h1>
           <span>Send a message to start a chat.</span>
         </div>
       )}

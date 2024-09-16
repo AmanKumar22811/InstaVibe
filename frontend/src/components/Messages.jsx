@@ -4,8 +4,10 @@ import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useSelector } from "react-redux";
 import useGetAllMeassage from "@/hooks/useGetAllMeassage";
+import useGetRTM from "@/hooks/useGetRTM";
 
 const Messages = ({ selectedUser }) => {
+  useGetRTM();
   useGetAllMeassage();
   const { messages } = useSelector((store) => store.chat);
   const { user } = useSelector((store) => store.auth);
@@ -13,7 +15,7 @@ const Messages = ({ selectedUser }) => {
     <div className="overflow-y-auto flex-1 p-4">
       <div className="flex justify-center">
         <div className="flex flex-col items-center justify-center ">
-          <Avatar className="text-black">
+          <Avatar className="text-black h-20 w-20">
             <AvatarImage src={selectedUser?.profilePicture} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
@@ -27,22 +29,28 @@ const Messages = ({ selectedUser }) => {
       </div>
       <div className="flex flex-col gap-3">
         {messages &&
-          messages.map((msg) => (
-            <div
-              key={msg._id}
-              className={`flex ${
-                msg.senderId === user?._id ? "justify-end" : "justify-start"
-              }`}
-            >
+          messages.map((msg) => {
+            console.log(msg.senderId, user?._id);
+
+            return (
               <div
-                className={`p-2 rounded-lg max-w-xs break-words ${
-                  msg.senderId === user?._id ? "bg-pink-500" : "bg-violet-700"
+                key={msg._id}
+                className={`flex ${
+                  msg.senderId === user?._id ? "justify-end" : "justify-start"
                 }`}
               >
-                {msg.message}
+                <div
+                  className={`p-2 rounded-lg max-w-xs break-words ${
+                    msg.senderId === user?._id
+                      ? "bg-violet-700 "
+                      : "bg-pink-500"
+                  }`}
+                >
+                  {msg.message}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
       </div>
     </div>
   );
