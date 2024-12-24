@@ -10,7 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "@/redux/authSlice";
-
+import logo from "../../public/logo.png";
 const Login = () => {
   const [input, setInput] = useState({
     email: "",
@@ -68,7 +68,11 @@ const Login = () => {
         className="animated-border relative z-10 bg-white shadow-lg rounded-lg flex flex-col gap-6 p-8 w-full max-w-md"
       >
         <div className="text-center">
-          <h1 className="text-3xl font-bold sm:text-4xl">LOGO</h1>
+          <img
+            src={logo}
+            alt="logo"
+            className="w-32 mx-auto rounded-lg shadow-lg"
+          />
           <p className="text-gray-600 mt-2 text-sm sm:text-base">
             Login to see photos & videos from your friends
           </p>
