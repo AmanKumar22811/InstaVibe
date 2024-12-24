@@ -27,8 +27,8 @@ const LeftSidebar = () => {
     (store) => store.realTimeNotification
   );
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false); // Open state for CreatePost
-  const [isNotificationOpen, setNotificationOpen] = useState(false); // Open state for Notification popover
+  const [open, setOpen] = useState(false); 
+  const [isNotificationOpen, setNotificationOpen] = useState(false); 
 
   const logoutHandler = async () => {
     try {

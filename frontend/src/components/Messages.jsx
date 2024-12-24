@@ -30,8 +30,6 @@ const Messages = ({ selectedUser }) => {
       <div className="flex flex-col gap-3">
         {messages &&
           messages.map((msg) => {
-            console.log(msg.senderId, user?._id);
-
             return (
               <div
                 key={msg._id}
