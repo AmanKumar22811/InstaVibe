@@ -87,7 +87,6 @@ const Post = ({ post }) => {
           withCredentials: true,
         }
       );
-      console.log(res.data);
       if (res.data.success) {
         const updatedCommentData = [...comment, res.data.comment];
         setComment(updatedCommentData);

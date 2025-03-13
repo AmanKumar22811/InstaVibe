@@ -33,7 +33,6 @@ const EditProfile = () => {
 
   const fileChangeHandler = (e) => {
     const file = e.target.files?.[0];
-    console.log(e.target.files);
 
     if (file) {
       setInput({ ...input, profilePhoto: file });
@@ -61,8 +60,6 @@ const EditProfile = () => {
       });
 
       if (res.data.success) {
-        console.log(res.data.user);
-
         const updatedUserData = {
           ...user,
           bio: res.data.user?.bio,

@@ -28,7 +28,6 @@ const Signup = () => {
 
   const signupHandler = async (e) => {
     e.preventDefault();
-    console.log(input);
 
     try {
       setLoading(true);

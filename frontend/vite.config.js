@@ -5,7 +5,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
   server: {
     proxy: {
-      "/api": "https://instavibe-backend-0u8r.onrender.com",
+      "/api": "http://localhost:8000",
     },
   },
   plugins: [react()],
